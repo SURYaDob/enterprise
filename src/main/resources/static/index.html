@@ -1744,18 +1744,6 @@
         }
 
         // ========== COURSES ==========
-        async function fetchCourses(page) {
-            if (page !== undefined && page !== null) coursesPage = page;
-            try {
-                var res = await apiCall('GET', '/courses?page=' + coursesPage + '&size=5&sort=name,asc');
-                if (res.ok && res.data.data) {
-                    renderCourses(res.data.data);
-                }
-            } catch (err) {
-                document.getElementById('coursesList').innerHTML = '<div class="empty-state"><div class="empty-icon">Error</div><p>Failed to load courses</p></div>';
-            }
-        }
-
         async function searchCourses(page) {
             if (page !== undefined && page !== null) coursesPage = page;
             var name = document.getElementById('courseSearch').value.trim();

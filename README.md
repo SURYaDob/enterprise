@@ -4,6 +4,77 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 
 ---
 
+## 📸 Screenshots & Demo
+
+> ⚡ The application includes a **fully interactive single-page frontend** — no separate frontend framework needed. All screenshots below are captured from the live application at `http://localhost:8080`.
+
+### 🔐 Login Page
+
+| |
+|---|
+| <img src="screenshots/01-login-page.png" alt="Login page with gradient background and course info" width="800"> |
+| *Clean login form with gradient background, course info section below, and forgot password flow. No credentials pre-filled.* |
+
+### 📊 Admin Dashboard
+
+| |
+|---|
+| <img src="screenshots/02-dashboard.png" alt="Admin dashboard with 7 stat cards" width="800"> |
+| *7 stat cards: Total Users, Courses, Applications, Documents, Pending Reviews, Notifications, Unread. Gradient cards with hover animations.* |
+
+### 📚 Courses Management
+
+| |
+|---|
+| <img src="screenshots/03-courses.png" alt="Courses management with search and pagination" width="800"> |
+| *Search, create, edit, soft-delete courses. Admin "Show All" toggle for inactive courses. Paginated with smooth transitions.* |
+
+### 📋 Applications & Review Workflow
+
+| |
+|---|
+| <img src="screenshots/04-applications.png" alt="Applications review workflow with status filter" width="800"> |
+| *Students submit applications with SOP. Admin reviews with Approve/Reject flow. Status filter (All, Submitted, Under Review, Approved, Rejected).* |
+
+### 📄 Document Upload
+
+| |
+|---|
+| <img src="screenshots/05-documents.png" alt="Document upload with type selector" width="800"> |
+| *Upload PDFs, images, documents with type selector. View uploaded documents with sizes and dates in a paginated table.* |
+
+### 🔔 Notifications
+
+| |
+|---|
+| <img src="screenshots/06-notifications.png" alt="Notifications with mark-as-read" width="800"> |
+| *Automatic notifications on application status changes. Mark-as-read, filter unread, paginated list with timestamps.* |
+
+### 👥 User Management (Admin)
+
+| |
+|---|
+| <img src="screenshots/07-users.png" alt="User management with edit modal" width="800"> |
+| *List all users with role badges, edit inline modal, soft-delete, email search. Paginated with responsive table.* |
+
+### 📜 Audit Logs
+
+| |
+|---|
+| <img src="screenshots/08-audit-logs.png" alt="Audit logs with action tracking" width="800"> |
+| *Complete audit trail with actor, action, IP tracking. Paginated with color-coded action badges.* |
+
+### 🩺 Health Check
+
+| |
+|---|
+| <img src="screenshots/09-health.png" alt="Health check endpoint status" width="800"> |
+| *Simple health endpoint showing system status. Useful for monitoring and deployment checks.* |
+
+> 🎥 *Demo video coming soon — screenshots above showcase the current UI in action.*
+
+---
+
 ## ✨ Features
 
 ### 🔐 Authentication & Authorization
@@ -49,12 +120,12 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 - Spring Boot Actuator probes (production)
 
 ### 🌐 Interactive Frontend
-- **Dark theme** with gradient accents and animations
-- **Responsive** design (mobile-friendly)
-- **Live API testing** via browser
-- Real-time **dashboard stats** visualization
-- Course search, application review, notification viewer
-- Pagination throughout
+- **Dark neon theme** with gradient accents, glassmorphism cards, and smooth animations
+- **Fully responsive** design (mobile-friendly with collapsible sidebar)
+- **Live API testing** via browser — every button wired to the backend
+- Real-time **dashboard stats** visualization with animated stat cards
+- Course search, application review, notification viewer with pagination
+- **No build tools required** — single HTML file, served directly by Spring Boot
 
 ---
 
@@ -88,25 +159,21 @@ git clone https://github.com/cdac/enterprise.git
 cd enterprise
 ```
 
-### 2. Create Database
+### 2. Configure Environment
+
+Copy the example config and edit:
+
+```bash
+cp src/main/resources/application-dev.properties src/main/resources/application-dev.local.properties
+```
+
+Create the database:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS cdac_enterprise_db;
 ```
 
-### 3. Configure `application.properties`
-
-Edit `src/main/resources/application.properties` or use environment variables:
-
-| Property | Default | Description |
-|----------|---------|-------------|
-| `spring.datasource.url` | `jdbc:mysql://localhost:3306/cdac_enterprise_db` | MySQL JDBC URL |
-| `spring.datasource.username` | `root` | DB username |
-| `spring.datasource.password` | `root` | DB password |
-| `app.jwt.secret` | (see file) | JWT signing key (min 256-bit) |
-| `app.jwt.expiration-ms` | `900000` | Token expiry in ms |
-
-### 4. Run the Application
+### 3. Run the Application
 
 ```bash
 # Development mode
@@ -117,7 +184,9 @@ Edit `src/main/resources/application.properties` or use environment variables:
 java -jar target/enterprise-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ```
 
-### 5. Access the Application
+> **Note:** On first startup, the system seeds an initial admin user. Check the `DataInitializer.java` config file for seed credentials — change these before deploying to production.
+
+### 4. Access the Application
 
 | Resource | URL |
 |----------|-----|
@@ -144,16 +213,6 @@ The Docker setup will:
 - Create a MySQL 8.0 container (port 3307)
 - Build and run the Spring Boot app (port 8080)
 - Auto-configure the database connection
-
----
-
-## 🔑 Default Credentials
-
-After startup, the system seeds:
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | `admin@cdac.local` | `Admin@123` |
 
 ---
 
