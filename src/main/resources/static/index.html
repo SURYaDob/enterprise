@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC Enterprise - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-nav: #16162a;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #2d2d4a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(6,182,212,0.06) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 1%) rotate(1deg); }
+            66% { transform: translate(-1%, -1%) rotate(-1deg); }
+        }
+
+        /* ========== LOGIN PAGE ========== */
+        #loginPage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        #loginPage.hidden {
+            display: none !important;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header .logo-badge {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 1.5rem;
+            background: rgba(15,15,26,0.5);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 10px rgba(99,102,241,0.3);
+        }
+
+        .login-tab:hover:not(.active) {
+            color: var(--text);
+        }
+
+        .login-form-toggle {
+            display: none;
+        }
+        .login-form-toggle.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            background: rgba(15, 15, 26, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(99,102,241,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 6px 25px rgba(16,185,129,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .message-box {
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: fadeIn 0.2s ease;
+        }
+        .message-box.success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: var(--success); }
+        .message-box.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: var(--danger); }
+        .message-box.info { background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3); color: var(--primary-light); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-courses {
+            margin-top: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .login-courses h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .login-courses .course-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(15, 15, 26, 0.5);
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: default;
+            margin-bottom: 8px;
+        }
+
+        .login-courses .course-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .login-courses .course-item:hover {
+            border-color: rgba(99,102,241,0.3);
+            background: rgba(99,102,241,0.06);
+        }
+
+        .login-courses .course-badge {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.65rem;
+            color: white;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .login-courses .course-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .login-courses .course-info .course-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .login-courses .course-info .course-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .login-footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== APP PAGE ========== */
+        #appPage {
+            display: none;
+        }
+        #appPage.active {
+            display: block;
+        }
+
+        .navbar {
+            background: rgba(22, 22, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .navbar-brand .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .auth-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--success);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-logout.hidden {
+            display: none !important;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 10px 22px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--text);
+            transform: translateY(-1px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(99,102,241,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(15, 15, 26, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+
+        .btn-secondary {
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.3);
+            color: var(--primary-light);
+            width: auto;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(99,102,241,0.2);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        thead { background: rgba(99,102,241,0.08); }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(99,102,241,0.04); }
+
+        .badge {
+            display: inline-flex;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16,185,129,0.15); color: var(--success); }
+        .badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); }
+        .badge-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .badge-info { background: rgba(6,182,212,0.15); color: var(--secondary); }
+        .badge-primary { background: rgba(99,102,241,0.15); color: var(--primary-light); }
+
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 14px 20px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+        }
+
+        .toast-success { border-left: 4px solid var(--success); }
+        .toast-error { border-left: 4px solid var(--danger); }
+        .toast-info { border-left: 4px solid var(--primary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.5rem; }
+        .grid-1 { display: grid; gap: 1.5rem; }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(99,102,241,0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-card .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .subtitle {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .hidden { display: none !important; }
+
+        .mt-2 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .flex { display: flex; }
+        .flex-center { align-items: center; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-wrap { flex-wrap: wrap; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .empty-state p { font-size: 0.95rem; }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+            .navbar { padding: 0 1rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .tab-btn { padding: 8px 14px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== TOAST CONTAINER ========== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ========== LOGIN PAGE ========== -->
+    <div id="loginPage">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <div class="logo-badge">CE</div>
+                <h1>CDAC Enterprise</h1>
+                <p>Application &amp; Admission Management System</p>
+            </div>
+            <div class="login-card">
+                <div class="login-tabs">
+                    <button class="login-tab active" data-form="login">Sign In</button>
+                    <button class="login-tab" data-form="register">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginFormToggle" class="login-form-toggle active">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-input" id="loginEmail" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input class="form-input" id="loginPassword" type="password" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success" id="btnLogin">Sign In</button>
+                        <div style="text-align:center;margin-top:12px">
+                            <a href="#" id="forgotPasswordLink" style="color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:color 0.2s">Forgot Password?</a>
+                        </div>
+                    </form>
+                    <div id="loginMessage"></div>
+                </div>
+
+                <!-- Forgot Password Form -->
+                <div id="forgotFormToggle" class="login-form-toggle">
+                    <form id="forgotPasswordForm">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-input" id="forgotEmail" type="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btnForgotPassword">Send Reset Token</button>
+                        <div style="text-align:center;margin-top:12px">
+                            <a href="#" id="haveTokenLink" style="color:var(--primary-light);font-size:0.82rem;text-decoration:none;transition:color 0.2s;display:none">I have a reset token</a>
+                        </div>
+                        <div style="text-align:center;margin-top:8px">
+                            <a href="#" id="backToSignInLink" style="color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:color 0.2s">Back to Sign In</a>
+                        </div>
+                    </form>
+                    <div id="forgotMessage"></div>
+                </div>
+
+                <!-- Reset Password Form -->
+                <div id="resetFormToggle" class="login-form-toggle">
+                    <form id="resetPasswordForm">
+                        <div class="form-group">
+                            <label>Reset Token</label>
+                            <input class="form-input" id="resetToken" placeholder="Paste the token from your email" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3);color:var(--primary-light);font-family:monospace;font-size:0.85rem">
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input class="form-input" id="resetNewPassword" type="password" required minlength="8" placeholder="Min 8 chars, upper+lower+number+special">
+                        </div>
+                        <button type="submit" class="btn btn-success" id="btnResetPassword">Reset Password</button>
+                        <div style="text-align:center;margin-top:12px">
+                            <a href="#" id="backToSignInLink2" style="color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:color 0.2s">Back to Sign In</a>
+                        </div>
+                    </form>
+                    <div id="resetMessage"></div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerFormToggle" class="login-form-toggle">
+                    <form id="registerForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input class="form-input" id="regFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input class="form-input" id="regLastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-input" id="regEmail" type="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input class="form-input" id="regPassword" type="password" required minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone (10 digits)</label>
+                            <input class="form-input" id="regPhone" type="tel" pattern="[0-9]{10}">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btnRegister">Create Account</button>
+                    </form>
+                    <div id="registerMessage"></div>
+                </div>
+
+
+            </div>
+
+            <!-- ========== COURSES INFO BELOW LOGIN ========== -->
+            <div class="login-courses">
+                <h3>📚 Our Programs</h3>
+                <div class="course-item">
+                    <div class="course-badge">PG<br>DAC</div>
+                    <div class="course-info">
+                        <div class="course-name">PG Diploma in Advanced Computing</div>
+                        <div class="course-meta">9 months · Rs 1,50,000 · 240 seats</div>
+                    </div>
+                </div>
+                <div class="course-item">
+                    <div class="course-badge">DB<br>DA</div>
+                    <div class="course-info">
+                        <div class="course-name">Diploma in Big Data Analytics</div>
+                        <div class="course-meta">6 months · Rs 1,05,000 · 80 seats</div>
+                    </div>
+                </div>
+                <div class="course-item">
+                    <div class="course-badge">DE<br>SD</div>
+                    <div class="course-info">
+                        <div class="course-name">Diploma in Embedded Systems Design</div>
+                        <div class="course-meta">6 months · Rs 95,000 · 60 seats</div>
+                    </div>
+                </div>
+                <div class="course-item">
+                    <div class="course-badge">DAC</div>
+                    <div class="course-info">
+                        <div class="course-name">Diploma in Advanced Computing</div>
+                        <div class="course-meta">6 months · Rs 1,10,000 · 120 seats</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="login-footer">
+                CDAC Enterprise · Application &amp; Admission Management System<br>
+                Secure access · Authorized personnel only
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== APP PAGE ========== -->
+    <div id="appPage">
+        <nav class="navbar">
+            <a href="#" class="navbar-brand">
+                <div class="logo-icon">CE</div>
+                CDAC Enterprise
+            </a>
+            <div class="navbar-right">
+                <span id="authStatus" class="auth-badge">✅ Authenticated</span>
+                <button id="btnLogout" class="btn-logout" type="button">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="hero">
+                <h1>CDAC Enterprise Management System</h1>
+                <p>Full-featured REST API for Application &amp; Admission Management</p>
+            </div>
+
+            <div class="tab-bar" id="tabBar">
+                <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+                <button class="tab-btn" data-tab="courses">Courses</button>
+                <button class="tab-btn" data-tab="applications">Applications</button>
+                <button class="tab-btn" data-tab="notifications">Notifications</button>
+                <button class="tab-btn" data-tab="audit">Audit Logs</button>
+                <button class="tab-btn" data-tab="users">Users</button>
+                <button class="tab-btn" data-tab="documents">Documents</button>
+                <button class="tab-btn" data-tab="health">Health</button>
+            </div>
+
+            <!-- DASHBOARD -->
+            <div class="tab-content" id="tab-dashboard">
+                <div class="flex-between mb-2">
+                    <div class="section-title">Admin Dashboard <span class="subtitle">System Statistics</span></div>
+                    <button class="btn btn-secondary btn-sm" id="btnRefreshDashboard" type="button">Refresh</button>
+                </div>
+                <div class="grid-4" id="dashboardStats">
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.15);">Users</div><div class="stat-value">-</div><div class="stat-label">Total Users</div></div>
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(6,182,212,0.15);">Courses</div><div class="stat-value">-</div><div class="stat-label">Total Courses</div></div>
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.15);">Apps</div><div class="stat-value">-</div><div class="stat-label">Applications</div></div>
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.15);">Approved</div><div class="stat-value">-</div><div class="stat-label">Approved</div></div>
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(239,68,68,0.15);">Rejected</div><div class="stat-value">-</div><div class="stat-label">Rejected</div></div>
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.15);">Docs</div><div class="stat-value">-</div><div class="stat-label">Documents</div></div>
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.15);">Pending</div><div class="stat-value">-</div><div class="stat-label">Submitted</div></div>
+                </div>
+                <div id="dashboardMessage"></div>
+            </div>
+
+            <!-- COURSES -->
+            <div class="tab-content hidden" id="tab-courses">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title" id="courseSectionTitle">Active Courses</div>
+                            <div class="flex" style="gap:4px">
+                                <input class="form-input" id="courseSearch" placeholder="Search by name..." style="width:150px;padding:8px 12px;font-size:0.85rem">
+                                <button class="btn btn-secondary btn-sm" id="btnSearchCourses" type="button">Search</button>
+                                <label class="flex flex-center" style="gap:4px;font-size:0.8rem;color:var(--text-muted);cursor:pointer">
+                                    <input type="checkbox" id="showAllCourses"> All
+                                </label>
+                            </div>
+                        </div>
+                        <div id="coursesList"><div class="empty-state"><div class="empty-icon">Loading...</div><p>Loading courses...</p></div></div>
+                        <div class="pagination" id="coursesPagination"></div>
+                        <div id="coursesMessage"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title" id="courseFormTitle">Create Course</div>
+                        </div>
+                        <form id="createCourseForm">
+                            <input type="hidden" id="editCourseId" value="">
+                            <div class="form-group"><label>Code</label><input class="form-input" id="courseCode" required></div>
+                            <div class="form-group"><label>Name</label><input class="form-input" id="courseName" required></div>
+                            <div class="form-group"><label>Description</label><textarea class="form-textarea" id="courseDesc"></textarea></div>
+                            <div class="grid-2">
+                                <div class="form-group"><label>Duration (months)</label><input class="form-input" id="courseDuration" type="number" min="1" required></div>
+                                <div class="form-group"><label>Fee (Rs)</label><input class="form-input" id="courseFee" type="number" step="0.01" min="0" required></div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group"><label>Capacity</label><input class="form-input" id="courseCapacity" type="number" min="1" required></div>
+                                <div class="form-group"><label>Active</label><select class="form-select" id="courseActive"><option value="true">Yes</option><option value="false">No</option></select></div>
+                            </div>
+                            <div class="flex" style="gap:8px">
+                                <button type="submit" class="btn btn-primary btn-sm" id="btnCreateCourse" style="width:auto">Create Course</button>
+                                <button type="button" class="btn btn-secondary btn-sm hidden" id="btnCancelEditCourse" style="width:auto">Cancel</button>
+                            </div>
+                        </form>
+                        <div id="createCourseMessage"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPLICATIONS -->
+            <div class="tab-content hidden" id="tab-applications">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">Submit Application</div></div>
+                        <form id="createAppForm">
+                            <div class="form-group"><label>Course ID</label><input class="form-input" id="appCourseId" type="number" required></div>
+                            <div class="form-group"><label>Statement of Purpose</label><textarea class="form-textarea" id="appSop" maxlength="5000" placeholder="Tell us why you want to join this course..."></textarea></div>
+                            <button type="submit" class="btn btn-primary btn-sm" id="btnSubmitApp" style="width:auto">Submit Application</button>
+                        </form>
+                        <div id="createAppMessage"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">My Applications</div></div>
+                        <div id="myAppsList"><div class="empty-state"><div class="empty-icon">Applications</div><p>No applications yet.</p></div></div>
+                        <div class="pagination" id="appsPagination"></div>
+                        <div id="appsMessage"></div>
+                    </div>
+                </div>
+                <div class="card mt-2">
+                    <div class="card-header"><div class="card-title">Review Application</div></div>
+                    <form id="reviewAppForm" class="flex flex-wrap" style="gap:8px;align-items:end">
+                        <div class="form-group"><label>Application ID</label><input class="form-input" id="reviewAppId" type="number" required style="width:100px;padding:8px 12px"></div>
+                        <div class="form-group"><label>Status</label><select class="form-select" id="reviewAppStatus" style="padding:8px 12px"><option>UNDER_REVIEW</option><option>APPROVED</option><option>REJECTED</option></select></div>
+                        <div class="form-group"><label>Remarks</label><input class="form-input" id="reviewAppRemarks" style="width:200px;padding:8px 12px"></div>
+                        <button type="submit" class="btn btn-secondary btn-sm" id="btnReviewApp">Review</button>
+                    </form>
+                    <div id="reviewAppMessage"></div>
+                </div>
+                <!-- Admin: All Applications -->
+                <div class="card mt-2 hidden" id="allAppsSection">
+                    <div class="card-header">
+                        <div class="card-title">All Applications (Admin)</div>
+                        <div class="flex" style="gap:8px">
+                            <select class="form-select" id="allAppsStatusFilter" style="width:160px;padding:6px 10px;font-size:0.85rem" onchange="allAppsPage=0;fetchAllApps()">
+                                <option value="">All Statuses</option>
+                                <option value="SUBMITTED">Submitted</option>
+                                <option value="UNDER_REVIEW">Under Review</option>
+                                <option value="APPROVED">Approved</option>
+                                <option value="REJECTED">Rejected</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                            <button class="btn btn-secondary btn-sm" onclick="allAppsPage=0;fetchAllApps()">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="allAppsList"><div class="empty-state"><div class="empty-icon">Applications</div><p>Loading all applications...</p></div></div>
+                    <div class="pagination" id="allAppsPagination"></div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div class="tab-content hidden" id="tab-notifications">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">My Notifications</div>
+                        <div class="flex" style="gap:8px">
+                            <label class="flex flex-center" style="gap:6px;font-size:0.85rem;color:var(--text-muted)">
+                                <input type="checkbox" id="unreadOnly"> Unread only
+                            </label>
+                            <button class="btn btn-secondary btn-sm" id="btnRefreshNotifs" type="button">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="notificationsList"><div class="empty-state"><div class="empty-icon">Notifications</div><p>No notifications.</p></div></div>
+                    <div class="pagination" id="notifPagination"></div>
+                    <div id="notifMessage"></div>
+                </div>
+            </div>
+
+            <!-- DOCUMENTS -->
+            <div class="tab-content hidden" id="tab-documents">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">Upload Document</div></div>
+                        <form id="uploadDocForm" enctype="multipart/form-data">
+                            <div class="form-group"><label>Application ID</label><input class="form-input" id="docAppId" type="number" required></div>
+                            <div class="form-group"><label>Document Type</label><select class="form-select" id="docType"><option value="PHOTO">Photo</option><option value="ID_PROOF">ID Proof</option><option value="MARKSHEET">Marksheet</option><option value="RESUME">Resume</option><option value="OTHER">Other</option></select></div>
+                            <div class="form-group"><label>File</label><input class="form-input" id="docFile" type="file" required style="padding:8px"></div>
+                            <button type="submit" class="btn btn-primary btn-sm" id="btnUploadDoc" style="width:auto">Upload Document</button>
+                        </form>
+                        <div id="uploadDocMessage"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">My Documents</div></div>
+                        <div id="myDocsList"><div class="empty-state"><div class="empty-icon">Documents</div><p>No documents uploaded yet.</p></div></div>
+                        <div id="docsMessage"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUDIT LOGS -->
+            <div class="tab-content hidden" id="tab-audit">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Audit Logs</div>
+                        <button class="btn btn-secondary btn-sm" id="btnRefreshAudit" type="button">Refresh</button>
+                    </div>
+                    <div id="auditLogsList"><div class="empty-state"><div class="empty-icon">Audit</div><p>No audit logs.</p></div></div>
+                    <div class="pagination" id="auditPagination"></div>
+                    <div id="auditMessage"></div>
+                </div>
+            </div>
+
+            <!-- USERS -->
+            <div class="tab-content hidden" id="tab-users">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">User Management</div>
+                        <div class="flex" style="gap:4px">
+                            <input class="form-input" id="userSearch" placeholder="Search by email..." style="width:220px;padding:8px 12px;font-size:0.85rem">
+                            <button class="btn btn-secondary btn-sm" id="btnSearchUsers" type="button">Search</button>
+                        </div>
+                    </div>
+                    <div id="usersList"><div class="empty-state"><div class="empty-icon">Users</div><p>Loading users...</p></div></div>
+                    <div class="pagination" id="usersPagination"></div>
+                    <div id="usersMessage"></div>
+                </div>
+            </div>
+
+            <!-- Edit User Modal Overlay -->
+            <div class="hidden" id="editUserModalOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:500" onclick="closeEditUserModal()"></div>
+            <!-- Edit User Modal -->
+            <div class="hidden" id="editUserModal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:501;width:90%;max-width:400px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+                <div class="card-header" style="margin-bottom:1.5rem">
+                    <div class="card-title">Edit User</div>
+                </div>
+                <div class="form-group"><label>First Name</label><input class="form-input" id="editUserFirstName"></div>
+                <div class="form-group"><label>Last Name</label><input class="form-input" id="editUserLastName"></div>
+                <div class="form-group"><label>Phone</label><input class="form-input" id="editUserPhone"></div>
+                <div class="flex" style="gap:8px;margin-top:1.5rem">
+                    <button class="btn btn-primary btn-sm" id="btnSaveEditUser" onclick="saveEditUser()" style="width:auto">Save Changes</button>
+                    <button class="btn btn-secondary btn-sm" onclick="closeEditUserModal()" style="width:auto">Cancel</button>
+                </div>
+                <div id="editUserMessage"></div>
+            </div>
+
+            <!-- HEALTH -->
+            <div class="tab-content hidden" id="tab-health">
+                <div class="card" style="text-align:center;padding:3rem">
+                    <div style="font-size:4rem;margin-bottom:1rem" id="healthIcon">OK</div>
+                    <h2 id="healthTitle">Checking...</h2>
+                    <p style="color:var(--text-muted)" id="healthMessage">Please wait while we check the server status.</p>
+                    <button class="btn btn-primary btn-sm" id="btnCheckHealth" type="button" style="width:auto;margin-top:1rem">Check Again</button>
+                    <div id="healthStatusMessage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== STATE ==========
+        var auth = {
+            token: localStorage.getItem('token') || null,
+            email: localStorage.getItem('email') || null,
+            roles: JSON.parse(localStorage.getItem('roles') || '[]')
+        };
+        var coursesPage = 0;
+        var appsPage = 0;
+        var notifPage = 0;
+        var auditPage = 0;
+        var usersPage = 0;
+
+        var API_BASE = window.location.origin + '/api/v1';
+
+        // ========== DOMContentLoaded ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            setupLoginTabs();
+            setupLoginForm();
+            setupRegisterForm();
+            setupForgotPasswordForm();
+            setupResetPasswordForm();
+            setupTabs();
+            setupAppButtons();
+            setupAppForms();
+
+            // Always show login page first for security
+            showLogin();
+        });
+
+        // ========== PAGE SWITCHING ==========
+        function showLogin() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('appPage').classList.remove('active');
+            document.getElementById('appPage').style.display = 'none';
+        }
+
+        function showApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('appPage').style.display = 'block';
+            document.getElementById('appPage').classList.add('active');
+
+            document.getElementById('authStatus').textContent = 'Logged in as ' + auth.email;
+
+            // Load data
+            checkHealth();
+            fetchCourses();
+            fetchDashboard();
+            fetchMyApps();
+            fetchNotifications();
+            fetchMyDocs();
+            fetchAuditLogs();
+        }
+
+        // ========== API HELPER ==========
+        async function apiCall(method, path, body) {
+            var headers = { 'Accept': 'application/json' };
+            if (body && !(body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
+            if (auth.token) {
+                headers['Authorization'] = 'Bearer ' + auth.token;
+            }
+            var opts = { method: method, headers: headers };
+            if (body) {
+                opts.body = body instanceof FormData ? body : JSON.stringify(body);
+            }
+            var res = await fetch(API_BASE + path, opts);
+            var data = await res.json();
+            return { ok: res.ok, status: res.status, data: data };
+        }
+
+        // ========== TOAST ==========
+        function showToast(message, type) {
+            type = type || 'info';
+            var container = document.getElementById('toastContainer');
+            var toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(function() { if (toast.parentNode) toast.remove(); }, 4000);
+        }
+
+        // ========== MESSAGE BOX ==========
+        function showMessage(el, message, type) {
+            if (!el) return;
+            var icons = { success: 'OK', error: 'X', info: 'i' };
+            el.innerHTML = '<div class="message-box ' + type + '">' + message + '</div>';
+            setTimeout(function() { el.innerHTML = ''; }, 8000);
+        }
+
+        // ========== LOGIN PAGE SETUP ==========
+        function setupLoginTabs() {
+            var tabs = document.querySelectorAll('.login-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].addEventListener('click', function() {
+                    var allTabs = document.querySelectorAll('.login-tab');
+                    for (var j = 0; j < allTabs.length; j++) {
+                        allTabs[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+
+                    var allForms = document.querySelectorAll('.login-form-toggle');
+                    for (var k = 0; k < allForms.length; k++) {
+                        allForms[k].classList.remove('active');
+                    }
+                    var formName = this.dataset.form;
+                    var targetId = formName === 'login' ? 'loginFormToggle' : formName + 'FormToggle';
+                    var target = document.getElementById(targetId);
+                    if (target) target.classList.add('active');
+                });
+            }
+        }
+
+        // ========== FORGOT / RESET PASSWORD ==========
+        function setupForgotPasswordForm() {
+            // Forgot password link click
+            document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                showForgotForm();
+            });
+
+            // Back to sign in links
+            document.getElementById('backToSignInLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                showSignInForm();
+            });
+            document.getElementById('backToSignInLink2').addEventListener('click', function(e) {
+                e.preventDefault();
+                showSignInForm();
+            });
+
+            // "I have a reset token" link
+            document.getElementById('haveTokenLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                showResetForm();
+            });
+
+            // Forgot password form submit
+            document.getElementById('forgotPasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnForgotPassword');
+                var haveTokenLink = document.getElementById('haveTokenLink');
+                btn.disabled = true;
+                btn.textContent = 'Sending...';
+                try {
+                    var body = {
+                        email: document.getElementById('forgotEmail').value
+                    };
+                    var res = await apiCall('POST', '/auth/forgot-password', body);
+                    var msgEl = document.getElementById('forgotMessage');
+                    if (res.ok) {
+                        showMessage(msgEl, 'A password reset token has been sent to your email. Please check your inbox and spam folder.', 'success');
+                        showToast('Reset token sent! Check your email.', 'success');
+                        haveTokenLink.style.display = 'inline';
+                    } else {
+                        showMessage(msgEl, res.data.message || 'Failed to send reset token', 'error');
+                        showToast(res.data.message || 'Failed', 'error');
+                    }
+                } catch (err) {
+                    var msgEl = document.getElementById('forgotMessage');
+                    showMessage(msgEl, 'Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Send Reset Token';
+            });
+        }
+
+        function setupResetPasswordForm() {
+            document.getElementById('resetPasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnResetPassword');
+                btn.disabled = true;
+                btn.textContent = 'Resetting...';
+                try {
+                    var body = {
+                        token: document.getElementById('resetToken').value,
+                        newPassword: document.getElementById('resetNewPassword').value
+                    };
+                    var res = await apiCall('POST', '/auth/reset-password', body);
+                    var msgEl = document.getElementById('resetMessage');
+                    if (res.ok) {
+                        showMessage(msgEl, 'Password reset! You can now sign in.', 'success');
+                        showToast('Password reset successfully!', 'success');
+                        document.getElementById('resetPasswordForm').reset();
+                        document.getElementById('resetToken').value = '';
+                        // Switch back to sign in after 2 seconds
+                        setTimeout(function() { showSignInForm(); }, 2000);
+                    } else {
+                        showMessage(msgEl, res.data.message || 'Failed to reset password', 'error');
+                        showToast(res.data.message || 'Failed', 'error');
+                    }
+                } catch (err) {
+                    var msgEl = document.getElementById('resetMessage');
+                    showMessage(msgEl, 'Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Reset Password';
+            });
+        }
+
+        function showSignInForm() {
+            var forms = document.querySelectorAll('.login-form-toggle');
+            for (var i = 0; i < forms.length; i++) forms[i].classList.remove('active');
+            document.getElementById('loginFormToggle').classList.add('active');
+            // Activate the Sign In tab
+            var tabs = document.querySelectorAll('.login-tab');
+            for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+            tabs[0].classList.add('active');
+            // Clear messages
+            document.getElementById('loginMessage').innerHTML = '';
+            document.getElementById('forgotMessage').innerHTML = '';
+            document.getElementById('resetMessage').innerHTML = '';
+            // Hide the "I have a token" link
+            document.getElementById('haveTokenLink').style.display = 'none';
+        }
+
+        function showForgotForm() {
+            var forms = document.querySelectorAll('.login-form-toggle');
+            for (var i = 0; i < forms.length; i++) forms[i].classList.remove('active');
+            document.getElementById('forgotFormToggle').classList.add('active');
+            document.getElementById('loginMessage').innerHTML = '';
+            document.getElementById('forgotMessage').innerHTML = '';
+            document.getElementById('resetMessage').innerHTML = '';
+            document.getElementById('haveTokenLink').style.display = 'none';
+        }
+
+        function showResetForm() {
+            var forms = document.querySelectorAll('.login-form-toggle');
+            for (var i = 0; i < forms.length; i++) forms[i].classList.remove('active');
+            document.getElementById('resetFormToggle').classList.add('active');
+            document.getElementById('loginMessage').innerHTML = '';
+            document.getElementById('forgotMessage').innerHTML = '';
+            document.getElementById('resetMessage').innerHTML = '';
+        }
+
+        // ========== LOGIN FORM ==========
+        function setupLoginForm() {
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnLogin');
+                btn.disabled = true;
+                btn.textContent = 'Signing in...';
+                try {
+                    var body = {
+                        email: document.getElementById('loginEmail').value,
+                        password: document.getElementById('loginPassword').value
+                    };
+                    var res = await apiCall('POST', '/auth/login', body);
+                    if (res.ok && res.data.data && res.data.data.accessToken) {
+                        auth.token = res.data.data.accessToken;
+                        auth.email = res.data.data.email || body.email;
+                        auth.roles = res.data.data.roles || [];
+                        localStorage.setItem('token', auth.token);
+                        localStorage.setItem('email', auth.email);
+                        localStorage.setItem('roles', JSON.stringify(auth.roles));
+                        showToast('Welcome, ' + auth.email + '!', 'success');
+                        showApp();
+                    } else {
+                        var msgEl = document.getElementById('loginMessage');
+                        showMessage(msgEl, res.data.message || 'Invalid credentials', 'error');
+                        showToast(res.data.message || 'Login failed', 'error');
+                    }
+                } catch (err) {
+                    var msgEl = document.getElementById('loginMessage');
+                    showMessage(msgEl, 'Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+            });
+        }
+
+        function setupRegisterForm() {
+            document.getElementById('registerForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnRegister');
+                btn.disabled = true;
+                btn.textContent = 'Creating account...';
+                try {
+                    var body = {
+                        firstName: document.getElementById('regFirstName').value,
+                        lastName: document.getElementById('regLastName').value,
+                        email: document.getElementById('regEmail').value,
+                        password: document.getElementById('regPassword').value,
+                        phoneNumber: document.getElementById('regPhone').value
+                    };
+                    var res = await apiCall('POST', '/auth/register', body);
+                    var msgEl = document.getElementById('registerMessage');
+                    if (res.ok) {
+                        showMessage(msgEl, 'Account created! Switch to Sign In.', 'success');
+                        showToast('Registration successful!', 'success');
+                        document.getElementById('registerForm').reset();
+                        // Switch to login tab
+                        var tabs = document.querySelectorAll('.login-tab');
+                        tabs[0].click();
+                    } else {
+                        showMessage(msgEl, res.data.message || 'Registration failed', 'error');
+                        showToast(res.data.message || 'Registration failed', 'error');
+                    }
+                } catch (err) {
+                    var msgEl = document.getElementById('registerMessage');
+                    showMessage(msgEl, 'Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            });
+        }
+
+        // ========== APP TABS ==========
+        function setupTabs() {
+            var btns = document.querySelectorAll('#tabBar .tab-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].addEventListener('click', function() {
+                    var tabs = document.querySelectorAll('#tabBar .tab-btn');
+                    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+                    var contents = document.querySelectorAll('.tab-content');
+                    for (var k = 0; k < contents.length; k++) contents[k].classList.add('hidden');
+                    this.classList.add('active');
+                    var tab = document.getElementById('tab-' + this.dataset.tab);
+                    if (tab) tab.classList.remove('hidden');
+
+                    // Load data when tab is clicked
+                    var tabName = this.dataset.tab;
+                    if (tabName === 'dashboard') fetchDashboard();
+                    if (tabName === 'courses') fetchCourses();
+                    if (tabName === 'applications') { 
+                        fetchMyApps(); 
+                        var isAdmin = auth.roles && auth.roles.indexOf('ROLE_ADMIN') >= 0;
+                        var allSection = document.getElementById('allAppsSection');
+                        if (isAdmin && allSection) {
+                            allSection.classList.remove('hidden');
+                            fetchAllApps();
+                        } else if (allSection) {
+                            allSection.classList.add('hidden');
+                        }
+                    }
+                    if (tabName === 'notifications') fetchNotifications();
+                    if (tabName === 'documents') fetchMyDocs();
+                    if (tabName === 'audit') fetchAuditLogs();
+                    if (tabName === 'users') fetchUsers();
+                    if (tabName === 'health') checkHealth();
+                });
+            }
+        }
+
+        // ========== APP BUTTONS ==========
+        function setupAppButtons() {
+            // LOGOUT BUTTON
+            document.getElementById('btnLogout').addEventListener('click', function(e) {
+                e.preventDefault();
+                auth.token = null;
+                auth.email = null;
+                auth.roles = [];
+                localStorage.removeItem('token');
+                localStorage.removeItem('email');
+                localStorage.removeItem('roles');
+                showToast('Logged out successfully', 'info');
+                showLogin();
+            });
+
+            // Dashboard refresh
+            document.getElementById('btnRefreshDashboard').addEventListener('click', function() {
+                fetchDashboard();
+            });
+
+            // Course search
+            document.getElementById('btnSearchCourses').addEventListener('click', function() {
+                coursesPage = 0;
+                searchCourses();
+            });
+            document.getElementById('courseSearch').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') { coursesPage = 0; searchCourses(); }
+            });
+
+            // Show all courses toggle
+            document.getElementById('showAllCourses').addEventListener('change', function() {
+                coursesPage = 0;
+                fetchCourses();
+            });
+
+            // Notifications refresh
+            document.getElementById('btnRefreshNotifs').addEventListener('click', function() {
+                notifPage = 0;
+                fetchNotifications();
+            });
+
+            document.getElementById('unreadOnly').addEventListener('change', function() {
+                notifPage = 0;
+                fetchNotifications();
+            });
+
+            // Audit refresh
+            document.getElementById('btnRefreshAudit').addEventListener('click', function() {
+                auditPage = 0;
+                fetchAuditLogs();
+            });
+
+            // Health check
+            document.getElementById('btnCheckHealth').addEventListener('click', function() {
+                checkHealth();
+            });
+
+            // Users search
+            document.getElementById('btnSearchUsers').addEventListener('click', function() {
+                usersPage = 0;
+                searchUsers();
+            });
+            document.getElementById('userSearch').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') { usersPage = 0; searchUsers(); }
+            });
+        }
+
+        // ========== APP FORMS ==========
+        function setupAppForms() {
+            // Upload Document (multipart)
+            document.getElementById('uploadDocForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnUploadDoc');
+                btn.disabled = true;
+                btn.textContent = 'Uploading...';
+                try {
+                    var formData = new FormData();
+                    formData.append('applicationId', document.getElementById('docAppId').value);
+                    formData.append('documentType', document.getElementById('docType').value);
+                    formData.append('file', document.getElementById('docFile').files[0]);
+                    var headers = { 'Accept': 'application/json' };
+                    if (auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
+                    var res = await fetch(API_BASE + '/documents/upload', {
+                        method: 'POST',
+                        headers: headers,
+                        body: formData
+                    });
+                    var data = await res.json();
+                    if (res.ok) {
+                        showToast('Document uploaded!', 'success');
+                        document.getElementById('uploadDocForm').reset();
+                        fetchMyDocs();
+                    } else {
+                        showToast(data.message || 'Upload failed', 'error');
+                    }
+                } catch (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Upload Document';
+            });
+
+            // Create Course
+            document.getElementById('createCourseForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnCreateCourse');
+                btn.disabled = true;
+                btn.textContent = 'Creating...';
+                try {
+                    var body = {
+                        code: document.getElementById('courseCode').value,
+                        name: document.getElementById('courseName').value,
+                        description: document.getElementById('courseDesc').value,
+                        durationInMonths: parseInt(document.getElementById('courseDuration').value),
+                        fee: parseFloat(document.getElementById('courseFee').value),
+                        capacity: parseInt(document.getElementById('courseCapacity').value),
+                        active: document.getElementById('courseActive').value === 'true'
+                    };
+                    var editId = document.getElementById('editCourseId').value;
+                    var isEdit = editId ? true : false;
+                    var method = isEdit ? 'PUT' : 'POST';
+                    var path = isEdit ? '/admin/courses/' + editId : '/admin/courses';
+                    var res = await apiCall(method, path, body);
+                    if (res.ok) {
+                        showToast('Course ' + (isEdit ? 'updated' : body.code + ' created') + '!', 'success');
+                        document.getElementById('createCourseForm').reset();
+                        document.getElementById('editCourseId').value = '';
+                        document.getElementById('courseFormTitle').textContent = 'Create Course';
+                        document.getElementById('btnCreateCourse').textContent = 'Create Course';
+                        document.getElementById('btnCancelEditCourse').classList.add('hidden');
+                        coursesPage = 0;
+                        fetchCourses();
+                    } else {
+                        showToast(res.data.message || 'Failed', 'error');
+                    }
+                } catch (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = editId ? 'Update Course' : 'Create Course';
+            });
+
+            // Cancel edit course
+            document.getElementById('btnCancelEditCourse').addEventListener('click', function() {
+                document.getElementById('createCourseForm').reset();
+                document.getElementById('editCourseId').value = '';
+                document.getElementById('courseFormTitle').textContent = 'Create Course';
+                document.getElementById('btnCreateCourse').textContent = 'Create Course';
+                document.getElementById('btnCancelEditCourse').classList.add('hidden');
+            });
+
+            // Submit Application
+            document.getElementById('createAppForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnSubmitApp');
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+                try {
+                    var body = {
+                        courseId: parseInt(document.getElementById('appCourseId').value),
+                        statementOfPurpose: document.getElementById('appSop').value
+                    };
+                    var res = await apiCall('POST', '/applications', body);
+                    if (res.ok) {
+                        showToast('Application submitted!', 'success');
+                        document.getElementById('createAppForm').reset();
+                        appsPage = 0;
+                        fetchMyApps();
+                    } else {
+                        showToast(res.data.message || 'Failed to submit', 'error');
+                    }
+                } catch (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Submit Application';
+            });
+
+            // Review Application
+            document.getElementById('reviewAppForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('btnReviewApp');
+                btn.disabled = true;
+                btn.textContent = 'Reviewing...';
+                try {
+                    var id = document.getElementById('reviewAppId').value;
+                    var body = {
+                        status: document.getElementById('reviewAppStatus').value,
+                        adminRemarks: document.getElementById('reviewAppRemarks').value
+                    };
+                    var res = await apiCall('PUT', '/admin/applications/' + id + '/review', body);
+                    if (res.ok) {
+                        showToast('Application #' + id + ' reviewed!', 'success');
+                        document.getElementById('reviewAppForm').reset();
+                        appsPage = 0;
+                        fetchMyApps();
+                    } else {
+                        showToast(res.data.message || 'Failed to review', 'error');
+                    }
+                } catch (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                }
+                btn.disabled = false;
+                btn.textContent = 'Review';
+            });
+        }
+
+        // ========== HEALTH ==========
+        async function checkHealth() {
+            try {
+                var res = await apiCall('GET', '/health');
+                if (res.ok && res.data.data && res.data.data.status === 'UP') {
+                    document.getElementById('healthIcon').textContent = 'OK';
+                    document.getElementById('healthTitle').textContent = 'All Systems Operational';
+                    document.getElementById('healthMessage').textContent = 'The server is running smoothly.';
+                    showToast('Server healthy!', 'success');
+                } else {
+                    document.getElementById('healthIcon').textContent = 'Warning';
+                    document.getElementById('healthTitle').textContent = 'System Issues Detected';
+                    document.getElementById('healthMessage').textContent = 'Some services may be unavailable.';
+                }
+            } catch (err) {
+                document.getElementById('healthIcon').textContent = 'Error';
+                document.getElementById('healthTitle').textContent = 'Cannot Reach Server';
+                document.getElementById('healthMessage').textContent = 'Please check if the server is running.';
+            }
+        }
+
+        // ========== DASHBOARD ==========
+        async function fetchDashboard() {
+            try {
+                var res = await apiCall('GET', '/admin/dashboard/stats');
+                if (res.ok && res.data.data) {
+                    var s = res.data.data;
+                    var vals = document.querySelectorAll('#dashboardStats .stat-value');
+                    if (vals.length >= 7) {
+                        vals[0].textContent = s.totalUsers != null ? s.totalUsers : '-';
+                        vals[1].textContent = s.totalCourses != null ? s.totalCourses : '-';
+                        vals[2].textContent = s.totalApplications != null ? s.totalApplications : '-';
+                        vals[3].textContent = s.approvedApplications != null ? s.approvedApplications : '-';
+                        vals[4].textContent = s.rejectedApplications != null ? s.rejectedApplications : '-';
+                        vals[5].textContent = s.totalUploadedDocuments != null ? s.totalUploadedDocuments : '-';
+                        vals[6].textContent = s.submittedApplications != null ? s.submittedApplications : '-';
+                    }
+                    showToast('Dashboard refreshed', 'success');
+                } else {
+                    showToast(res.data.message || 'Failed to load dashboard', 'error');
+                }
+            } catch (err) {
+                showToast('Network error loading dashboard', 'error');
+            }
+        }
+
+        // ========== COURSES ==========
+        async function fetchCourses(page) {
+            if (page !== undefined && page !== null) coursesPage = page;
+            try {
+                var res = await apiCall('GET', '/courses?page=' + coursesPage + '&size=5&sort=name,asc');
+                if (res.ok && res.data.data) {
+                    renderCourses(res.data.data);
+                }
+            } catch (err) {
+                document.getElementById('coursesList').innerHTML = '<div class="empty-state"><div class="empty-icon">Error</div><p>Failed to load courses</p></div>';
+            }
+        }
+
+        async function searchCourses(page) {
+            if (page !== undefined && page !== null) coursesPage = page;
+            var name = document.getElementById('courseSearch').value.trim();
+            if (!name) { fetchCourses(); return; }
+            try {
+                var res = await apiCall('GET', '/courses/search?name=' + encodeURIComponent(name) + '&page=' + coursesPage + '&size=5');
+                if (res.ok && res.data.data) {
+                    renderCourses(res.data.data);
+                } else {
+                    document.getElementById('coursesList').innerHTML = '<div class="empty-state"><div class="empty-icon">Search</div><p>No courses match your search</p></div>';
+                }
+            } catch (err) {
+                showToast('Search failed', 'error');
+            }
+        }
+
+        function renderCourses(pageData) {
+            var container = document.getElementById('coursesList');
+            var isAdmin = auth.roles && auth.roles.indexOf('ROLE_ADMIN') >= 0;
+            if (!pageData || !pageData.content || pageData.content.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">Courses</div><p>No courses available.</p></div>';
+                document.getElementById('coursesPagination').innerHTML = '';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table><thead><tr><th>Code</th><th>Name</th><th>Duration</th><th>Fee</th><th>Capacity</th><th>Status</th>' + (isAdmin ? '<th>Actions</th>' : '') + '</tr></thead><tbody>';
+            for (var i = 0; i < pageData.content.length; i++) {
+                var c = pageData.content[i];
+                var statusBadge = c.active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Inactive</span>';
+                var actions = '';
+                if (isAdmin) {
+                    actions = '<td><div class="flex" style="gap:4px">' +
+                        '<button class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:0.75rem" onclick="editCourse(' + c.id + ')">Edit</button>' +
+                        '<button class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:0.75rem;background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3)" onclick="if(confirm(\'Delete course ' + escapeHtml(c.code) + '?\')) deleteCourse(' + c.id + ')">Delete</button>' +
+                        '</div></td>';
+                }
+                html += '<tr><td><strong>' + escapeHtml(c.code) + '</strong></td><td>' + escapeHtml(c.name) + '</td><td>' + c.durationInMonths + 'm</td><td>Rs ' + Number(c.fee).toLocaleString() + '</td><td>' + c.capacity + '</td><td>' + statusBadge + '</td>' + actions + '</tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            renderPagination('coursesPagination', pageData, 'fetchCourses');
+        }
+
+        // ========== COURSE ADMIN ACTIONS ==========
+        async function editCourse(id) {
+            try {
+                var res = await apiCall('GET', '/admin/courses/' + id);
+                if (res.ok && res.data.data) {
+                    var c = res.data.data;
+                    document.getElementById('editCourseId').value = c.id;
+                    document.getElementById('courseCode').value = c.code;
+                    document.getElementById('courseName').value = c.name;
+                    document.getElementById('courseDesc').value = c.description || '';
+                    document.getElementById('courseDuration').value = c.durationInMonths;
+                    document.getElementById('courseFee').value = c.fee;
+                    document.getElementById('courseCapacity').value = c.capacity;
+                    document.getElementById('courseActive').value = c.active ? 'true' : 'false';
+                    document.getElementById('courseFormTitle').textContent = 'Edit Course: ' + c.code;
+                    document.getElementById('btnCreateCourse').textContent = 'Update Course';
+                    document.getElementById('btnCancelEditCourse').classList.remove('hidden');
+                } else {
+                    showToast(res.data.message || 'Failed to load course', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        async function deleteCourse(id) {
+            try {
+                var res = await apiCall('DELETE', '/admin/courses/' + id);
+                if (res.ok) {
+                    showToast('Course deleted', 'success');
+                    coursesPage = 0;
+                    fetchCourses();
+                } else {
+                    showToast(res.data.message || 'Failed to delete', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // ========== COURSES TOGGLE ALL ==========
+        async function fetchCourses(page) {
+            if (page !== undefined && page !== null) coursesPage = page;
+            var showAll = document.getElementById('showAllCourses').checked;
+            var isAdmin = auth.roles && auth.roles.indexOf('ROLE_ADMIN') >= 0;
+            try {
+                var url;
+                if (showAll && isAdmin) {
+                    url = '/admin/courses?page=' + coursesPage + '&size=5&sort=createdAt,desc';
+                } else {
+                    url = '/courses?page=' + coursesPage + '&size=5&sort=name,asc';
+                }
+                var res = await apiCall('GET', url);
+                if (res.ok && res.data.data) {
+                    renderCourses(res.data.data);
+                }
+            } catch (err) {
+                document.getElementById('coursesList').innerHTML = '<div class="empty-state"><div class="empty-icon">Error</div><p>Failed to load courses</p></div>';
+            }
+        }
+
+        // ========== APPLICATIONS ==========
+        async function fetchMyApps(page) {
+            if (page !== undefined && page !== null) appsPage = page;
+            if (!auth.token) return;
+            try {
+                var res = await apiCall('GET', '/applications?page=' + appsPage + '&size=5');
+                if (res.ok && res.data.data) {
+                    renderApps(res.data.data, 'myAppsList', 'appsPagination', 'fetchMyApps');
+                } else {
+                    document.getElementById('myAppsList').innerHTML = '<div class="empty-state"><div class="empty-icon">Applications</div><p>No applications found.</p></div>';
+                }
+            } catch (err) {}
+        }
+
+        function renderApps(pageData, containerId, paginationId, callbackFunc) {
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            if (!pageData || !pageData.content || pageData.content.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">Applications</div><p>No applications found.</p></div>';
+                if (paginationId) document.getElementById(paginationId).innerHTML = '';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Student</th><th>Course</th><th>Status</th><th>Submitted</th><th>Remarks</th><th>Actions</th></tr></thead><tbody>';
+            for (var i = 0; i < pageData.content.length; i++) {
+                var a = pageData.content[i];
+                var badgeCls = a.status === 'APPROVED' ? 'badge-success' : a.status === 'REJECTED' ? 'badge-danger' : a.status === 'SUBMITTED' ? 'badge-info' : 'badge-warning';
+                var dateStr = a.submittedAt ? new Date(a.submittedAt).toLocaleDateString() : '-';
+                var studentInfo = a.studentName ? escapeHtml(a.studentName) : (a.studentEmail ? escapeHtml(a.studentEmail) : '#' + a.userId);
+                var detailBtn = '<button class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:0.75rem" onclick="viewAppDetails(' + a.id + ')">Details</button>';
+                html += '<tr><td>#' + a.id + '</td><td>' + studentInfo + '</td><td>' + escapeHtml(a.courseCode || '') + ' - ' + escapeHtml(a.courseName || '') + '</td><td><span class="badge ' + badgeCls + '">' + a.status + '</span></td><td>' + dateStr + '</td><td>' + (a.adminRemarks ? escapeHtml(a.adminRemarks) : '-') + '</td><td>' + detailBtn + '</td></tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            if (paginationId) renderPagination(paginationId, pageData, callbackFunc);
+        }
+
+        // ========== VIEW APPLICATION DETAILS ==========
+        function viewAppDetails(id) {
+            showToast('Application #' + id + ' - Use the Review section to manage', 'info');
+            document.getElementById('reviewAppId').value = id;
+        }
+
+        // ========== ADMIN ALL APPLICATIONS ==========
+        var allAppsPage = 0;
+        async function fetchAllApps(page, statusFilter) {
+            if (page !== undefined && page !== null) allAppsPage = page;
+            var filter = statusFilter || document.getElementById('allAppsStatusFilter').value;
+            try {
+                var url;
+                if (filter) {
+                    url = '/admin/applications/status/' + filter + '?page=' + allAppsPage + '&size=10';
+                } else {
+                    url = '/admin/applications?page=' + allAppsPage + '&size=10';
+                }
+                var res = await apiCall('GET', url);
+                if (res.ok && res.data.data) {
+                    renderApps(res.data.data, 'allAppsList', 'allAppsPagination', 'fetchAllApps');
+                } else {
+                    document.getElementById('allAppsList').innerHTML = '<div class="empty-state"><div class="empty-icon">Applications</div><p>No applications found or access denied.</p></div>';
+                    document.getElementById('allAppsPagination').innerHTML = '';
+                }
+            } catch (err) {}
+        }
+
+        // ========== NOTIFICATIONS ==========
+        async function fetchNotifications(page) {
+            if (page !== undefined && page !== null) notifPage = page;
+            if (!auth.token) return;
+            var unread = document.getElementById('unreadOnly').checked;
+            try {
+                var res = await apiCall('GET', '/notifications?unreadOnly=' + unread + '&page=' + notifPage + '&size=5');
+                if (res.ok && res.data.data) {
+                    renderNotifs(res.data.data);
+                }
+            } catch (err) {}
+        }
+
+        function renderNotifs(pageData) {
+            var container = document.getElementById('notificationsList');
+            if (!pageData || !pageData.content || pageData.content.length === 0) {
+                var msg = document.getElementById('unreadOnly').checked ? 'No unread notifications' : 'No notifications found';
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">Notifications</div><p>' + msg + '</p></div>';
+                document.getElementById('notifPagination').innerHTML = '';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table><thead><tr><th>Type</th><th>Title</th><th>Message</th><th>Read</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+            for (var i = 0; i < pageData.content.length; i++) {
+                var n = pageData.content[i];
+                var dateStr = n.createdAt ? new Date(n.createdAt).toLocaleDateString() : '-';
+                var markBtn = n.readStatus ? '' : '<button class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:0.75rem" onclick="markNotifRead(' + n.id + ')">Mark Read</button>';
+                html += '<tr><td><span class="badge badge-info">' + n.type + '</span></td><td>' + escapeHtml(n.title) + '</td><td>' + escapeHtml(n.message) + '</td><td>' + (n.readStatus ? '<span class="badge badge-success">Read</span>' : '<span class="badge badge-info">New</span>') + '</td><td>' + dateStr + '</td><td>' + markBtn + '</td></tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            renderPagination('notifPagination', pageData, 'fetchNotifications');
+        }
+
+        // ========== MARK NOTIFICATION AS READ ==========
+        async function markNotifRead(id) {
+            try {
+                var res = await apiCall('PATCH', '/notifications/' + id + '/read');
+                if (res.ok) {
+                    showToast('Notification marked as read', 'success');
+                    fetchNotifications();
+                } else {
+                    showToast(res.data.message || 'Failed', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // ========== AUDIT LOGS ==========
+        async function fetchAuditLogs(page) {
+            if (page !== undefined && page !== null) auditPage = page;
+            if (!auth.token) return;
+            try {
+                var res = await apiCall('GET', '/admin/audit-logs?page=' + auditPage + '&size=10');
+                if (res.ok && res.data.data) {
+                    renderAuditLogs(res.data.data);
+                }
+            } catch (err) {}
+        }
+
+        function renderAuditLogs(pageData) {
+            var container = document.getElementById('auditLogsList');
+            if (!pageData || !pageData.content || pageData.content.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">Audit</div><p>No audit logs found.</p></div>';
+                document.getElementById('auditPagination').innerHTML = '';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table><thead><tr><th>Actor</th><th>Action</th><th>Entity</th><th>Description</th><th>Date</th></tr></thead><tbody>';
+            for (var i = 0; i < pageData.content.length; i++) {
+                var l = pageData.content[i];
+                var dateStr = l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '-';
+                html += '<tr><td>' + escapeHtml(l.actorEmail) + '</td><td><span class="badge badge-primary">' + l.action + '</span></td><td>' + l.entityType + ' #' + l.entityId + '</td><td>' + (l.description ? escapeHtml(l.description) : '-') + '</td><td>' + dateStr + '</td></tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            renderPagination('auditPagination', pageData, 'fetchAuditLogs');
+        }
+
+        // ========== USERS ==========
+        async function fetchUsers(page) {
+            if (page !== undefined && page !== null) usersPage = page;
+            if (!auth.token) return;
+            try {
+                var res = await apiCall('GET', '/admin/users?page=' + usersPage + '&size=10');
+                if (res.ok && res.data.data) {
+                    renderUsers(res.data.data);
+                } else {
+                    document.getElementById('usersList').innerHTML = '<div class="empty-state"><div class="empty-icon">Users</div><p>No users found or access denied.</p></div>';
+                }
+            } catch (err) {
+                document.getElementById('usersList').innerHTML = '<div class="empty-state"><div class="empty-icon">Error</div><p>Failed to load users</p></div>';
+            }
+        }
+
+        async function searchUsers(page) {
+            if (page !== undefined && page !== null) usersPage = page;
+            var email = document.getElementById('userSearch').value.trim();
+            if (!email) { fetchUsers(); return; }
+            try {
+                var res = await apiCall('GET', '/admin/users/search?email=' + encodeURIComponent(email));
+                if (res.ok && res.data.data != null) {
+                    var listData = res.data.data;
+                    // Wrap single user search result into a page-like structure
+                    var usersArray = Array.isArray(listData) ? listData : (listData ? [listData] : []);
+                    var pageData = {
+                        content: usersArray,
+                        totalElements: usersArray.length,
+                        totalPages: 1,
+                        number: 0,
+                        size: 10,
+                        first: true,
+                        last: true
+                    };
+                    renderUsers(pageData);
+                } else {
+                    document.getElementById('usersList').innerHTML = '<div class="empty-state"><div class="empty-icon">Search</div><p>No users match your search</p></div>';
+                }
+            } catch (err) {
+                showToast('Search failed', 'error');
+            }
+        }
+
+        function renderUsers(pageData) {
+            var container = document.getElementById('usersList');
+            if (!pageData || !pageData.content || pageData.content.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">Users</div><p>No users found.</p></div>';
+                document.getElementById('usersPagination').innerHTML = '';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead><tbody>';
+            for (var i = 0; i < pageData.content.length; i++) {
+                var u = pageData.content[i];
+                var editBtn = '<button class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:0.75rem" onclick="editUser(' + u.id + ', \'' + escapeHtml(u.firstName) + '\', \'' + escapeHtml(u.lastName) + '\', \'' + escapeHtml(u.phoneNumber || '') + '\')">Edit</button>';
+                var delBtn = '<button class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:0.75rem;background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3)" onclick="if(confirm(\'Delete user ' + escapeHtml(u.email) + '?\')) deleteUser(' + u.id + ')">Delete</button>';
+                html += '<tr><td>#' + u.id + '</td><td>' + escapeHtml(u.firstName) + ' ' + escapeHtml(u.lastName) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + (u.phoneNumber ? escapeHtml(u.phoneNumber) : '-') + '</td><td><div class="flex" style="gap:4px">' + editBtn + delBtn + '</div></td></tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+            renderPagination('usersPagination', pageData, 'fetchUsers');
+        }
+
+        // ========== EDIT USER ==========
+        var editUserId = null;
+        function editUser(id, firstName, lastName, phoneNumber) {
+            editUserId = id;
+            document.getElementById('editUserFirstName').value = firstName;
+            document.getElementById('editUserLastName').value = lastName;
+            document.getElementById('editUserPhone').value = phoneNumber;
+            document.getElementById('editUserModal').classList.remove('hidden');
+            document.getElementById('editUserModalOverlay').classList.remove('hidden');
+        }
+
+        function closeEditUserModal() {
+            editUserId = null;
+            document.getElementById('editUserModal').classList.add('hidden');
+            document.getElementById('editUserModalOverlay').classList.add('hidden');
+        }
+
+        async function saveEditUser() {
+            if (!editUserId) return;
+            var btn = document.getElementById('btnSaveEditUser');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            try {
+                var body = {
+                    firstName: document.getElementById('editUserFirstName').value,
+                    lastName: document.getElementById('editUserLastName').value,
+                    phoneNumber: document.getElementById('editUserPhone').value
+                };
+                var res = await apiCall('PUT', '/admin/users/' + editUserId, body);
+                if (res.ok) {
+                    showToast('User updated', 'success');
+                    closeEditUserModal();
+                    fetchUsers();
+                } else {
+                    showToast(res.data.message || 'Failed to update', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+            btn.disabled = false;
+            btn.textContent = 'Save Changes';
+        }
+
+        async function deleteUser(id) {
+            if (!auth.token) return;
+            try {
+                var res = await apiCall('DELETE', '/admin/users/' + id);
+                if (res.ok) {
+                    showToast('User deleted', 'success');
+                    fetchUsers();
+                } else {
+                    showToast(res.data.message || 'Failed to delete user', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // ========== PAGINATION ==========
+        // ========== MY DOCUMENTS ==========
+        async function fetchMyDocs() {
+            if (!auth.token) return;
+            try {
+                var res = await apiCall('GET', '/documents');
+                if (res.ok && res.data.data) {
+                    renderDocs(res.data.data);
+                } else {
+                    document.getElementById('myDocsList').innerHTML = '<div class="empty-state"><div class="empty-icon">Documents</div><p>No documents found or access denied.</p></div>';
+                }
+            } catch (err) {
+                document.getElementById('myDocsList').innerHTML = '<div class="empty-state"><div class="empty-icon">Error</div><p>Failed to load documents</p></div>';
+            }
+        }
+
+        function renderDocs(docs) {
+            var container = document.getElementById('myDocsList');
+            if (!docs || docs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">Documents</div><p>No documents uploaded yet.</p></div>';
+                return;
+            }
+            var html = '<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Type</th><th>File Name</th><th>Size</th><th>Application</th><th>Uploaded</th></tr></thead><tbody>';
+            for (var i = 0; i < docs.length; i++) {
+                var d = docs[i];
+                var sizeKB = Math.round(d.fileSize / 1024);
+                var dateStr = d.uploadedAt ? new Date(d.uploadedAt).toLocaleDateString() : '-';
+                html += '<tr><td>#' + d.id + '</td><td><span class="badge badge-primary">' + d.documentType + '</span></td><td>' + escapeHtml(d.originalFileName) + '</td><td>' + sizeKB + ' KB</td><td>#' + d.applicationId + '</td><td>' + dateStr + '</td></tr>';
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        function renderPagination(containerId, pageData, callbackFunc) {
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            if (!pageData || pageData.totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            var current = pageData.number;
+            var total = pageData.totalPages;
+            var html = '<button onclick="' + callbackFunc + '(' + (current - 1) + ')" ' + (pageData.first ? 'disabled' : '') + '>Prev</button>';
+            html += '<span>Page ' + (current + 1) + ' of ' + total + '</span>';
+            html += '<button onclick="' + callbackFunc + '(' + (current + 1) + ')" ' + (pageData.last ? 'disabled' : '') + '>Next</button>';
+            container.innerHTML = html;
+        }
+
+        // ========== UTILITY ==========
+        function escapeHtml(str) {
+            if (!str) return '';
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
