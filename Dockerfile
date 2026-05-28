@@ -37,6 +37,4 @@ USER appuser
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", \
-    "-jar", "/app/app.jar", \
-    "--spring.profiles.active=${SPRING_PROFILES_ACTIVE:-prod}"]
+ENTRYPOINT java -jar /app/app.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-h2}
