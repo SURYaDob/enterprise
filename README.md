@@ -2,6 +2,8 @@
 
 A **production-grade** Spring Boot 3 REST API backend for managing institutional applications, courses, admissions, user authentication, document uploads, and audit logging — with a **beautiful interactive frontend** for API testing.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Enterprise-2ea44f?style=for-the-badge&logo=render)](https://enterprise-latest.onrender.com)
+
 ---
 
 ## 📸 Screenshots & Demo
@@ -78,10 +80,18 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 ## ✨ Features
 
 ### 🔐 Authentication & Authorization
-- **JWT-based authentication** with access tokens (15 min expiry)
+- **JWT-based authentication** with access tokens (configurable expiry, default 15 min)
 - **Role-based access control** (`ROLE_STUDENT`, `ROLE_ADMIN`)
+- **Method-level security** via `@PreAuthorize` annotations
 - Secure password hashing with **BCrypt**
 - Public registration + admin seeding on startup
+- **Forgot / Reset password** flow with token-based email verification
+
+### 👥 User Management (Admin)
+- List all non-deleted users with pagination
+- Get user by ID, search by email
+- Update user profile (name, phone)
+- Soft-delete users
 
 ### 📚 Course Management
 - Full CRUD for courses (admin only)
@@ -91,8 +101,8 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 
 ### 📋 Application Management
 - Students can submit applications for active courses
-- Duplicate application prevention (one per student per course)
-- Admin review workflow: SUBMITTED → UNDER_REVIEW → APPROVED / REJECTED
+- **Duplicate application prevention** (one per student per course)
+- Admin review workflow: `SUBMITTED → UNDER_REVIEW → APPROVED / REJECTED / CANCELLED`
 - Statement of purpose and admin remarks support
 
 ### 📄 Document Upload
@@ -100,20 +110,26 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 - 5MB file size limit
 - Virus-safe storage with UUID filenames
 - Path traversal protection
+- Document type categorization (PHOTO, ID_PROOF, MARKSHEET, RESUME, OTHER)
 
 ### 🔔 Notifications
-- Automatic notifications on application status changes
-- Read/unread tracking
-- Paginated retrieval with unread filter
+- **Automatic notifications** on application status changes
+- Notification types: APPLICATION_SUBMITTED, APPLICATION_APPROVED, APPLICATION_REJECTED, APPLICATION_UNDER_REVIEW, DOCUMENT_UPLOADED
+- Read/unread tracking with timestamps
+- Paginated retrieval with unread-only filter
 
 ### 📊 Admin Dashboard
 - Aggregate statistics: users, courses, applications, documents
-- Type-filtered application counts
+- Type-filtered application counts (submitted, under review, approved, rejected)
 
 ### 📜 Audit Logging
-- Automatic audit trail for all critical actions
+- Automatic audit trail for all critical actions (application actions, course changes, document uploads)
 - Actor tracking with IP address capture
-- Paginated log retrieval
+- Paginated log retrieval sorted by timestamp
+
+### 📧 Email Service
+- **Password reset emails** with secure token-based links
+- Personalized email templates
 
 ### 🩺 Health Check
 - Simple health endpoint for monitoring
@@ -139,7 +155,9 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 | **API Docs** | SpringDoc OpenAPI (Swagger UI) |
 | **Validation** | Jakarta Bean Validation |
 | **File Upload** | Multipart file upload |
+| **Email** | Spring Mail (JavaMailSender) |
 | **Build** | Maven, Docker |
+| **Code Gen** | Lombok |
 | **Frontend** | Vanilla HTML, CSS (modern dark UI), vanilla JS |
 | **Monitoring** | Spring Boot Actuator |
 
@@ -311,15 +329,17 @@ enterprise/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/cdac/enterprise/
-│   │   │   ├── config/          # OpenAPI, CORS, DataInitializer, WebConfig
-│   │   │   ├── constant/        # Enums and constants (status, roles, messages)
+│   │   │   ├── config/          # OpenAPI config, CORS, DataInitializer, EssentialDataInitializer
+│   │   │   ├── constant/        # Enums and constants (status, roles, messages, paths)
 │   │   │   ├── controller/      # REST controllers (public, student, admin)
 │   │   │   ├── dto/             # Request/Response DTOs
 │   │   │   ├── entity/          # JPA entities
 │   │   │   ├── exception/       # Custom exceptions + global handler
 │   │   │   ├── repository/      # Spring Data JPA repositories
-│   │   │   ├── security/        # JWT auth, filters, entry points
-│   │   │   └── service/         # Business logic (interfaces + impls)
+│   │   │   ├── security/        # JWT auth, filters, entry points, UserDetailsService
+│   │   │   ├── service/         # Business logic interfaces
+│   │   │   │   └── impl/        # Service implementations
+│   │   │   └── util/            # Utility classes
 │   │   └── resources/
 │   │       ├── static/
 │   │       │   └── index.html   # ✨ Interactive frontend
@@ -377,7 +397,17 @@ enterprise/
 
 ---
 
-## 👥 Contributors
+## 👤 Author
 
-- **Suraj Dobale** — surajdobale29@gmail.com
-  GitHub: github.com/SURYaDob
+**Suraj Dobale**  
+📧 [surajdobale29@gmail.com](mailto:surajdobale29@gmail.com)  
+🐙 [github.com/SURYaDob](https://github.com/SURYaDob)  
+💼 [linkedin.com/in/suraj-dobale-b713b91a6](https://linkedin.com/in/suraj-dobale-b713b91a6)
+
+---
+
+## 🏷️ Topics
+
+> Suggested GitHub topics for this repository:
+
+`spring-boot` `java` `enterprise` `admission-management` `rest-api` `jwt-authentication` `spring-security` `mysql` `maven` `cdac` `full-stack` `file-upload` `audit-logging` `docker` `render-deployment`
