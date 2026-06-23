@@ -379,4 +379,5 @@ enterprise/
 
 ## 👥 Contributors
 
-- **CDAC Enterprise Backend Team** — [support@cdac-enterprise.local](mailto:support@cdac-enterprise.local)
+- **Suraj Dobale** — surajdobale29@gmail.com
+  GitHub: github.com/SURYaDob
