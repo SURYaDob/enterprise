@@ -173,7 +173,7 @@ A **production-grade** Spring Boot 3 REST API backend for managing institutional
 ### 1. Clone & Configure
 
 ```bash
-git clone https://github.com/cdac/enterprise.git
+git clone https://github.com/SURYaDob/enterprise.git
 cd enterprise
 ```
 

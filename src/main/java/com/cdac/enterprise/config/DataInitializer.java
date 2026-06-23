@@ -8,6 +8,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +35,11 @@ import com.cdac.enterprise.repository.UploadedDocumentRepository;
 import com.cdac.enterprise.repository.UserRepository;
 
 @Component
+@Profile("dev")
+@Order(2)
 public class DataInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
-
-    private static final String DEFAULT_ADMIN_EMAIL = "admin@cdac.local";
-    private static final String DEFAULT_ADMIN_PASSWORD = "Admin@123";
 
     private static final String DEMO_STUDENT_EMAIL = "demo.student@cdac.local";
     private static final String DEMO_STUDENT_PASSWORD = "Demo@123";
@@ -75,69 +76,30 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        log.info("Starting data initialization...");
+        log.info("Starting demo data initialization...");
 
-        // 1. Create roles
-        Role studentRole = createRoleIfNotExists(RoleName.ROLE_STUDENT, "Default role for student users who can apply for courses");
-        Role adminRole = createRoleIfNotExists(RoleName.ROLE_ADMIN, "Administrative role for managing users, courses, and applications");
+        // Essential roles and admin user are seeded by EssentialDataInitializer (runs in all profiles).
 
-        // 2. Create admin user
-        User admin = createAdminUserIfNotExists(adminRole);
-
-        // 3. Create demo courses
+        // 1. Create demo courses
         createDemoCourses();
 
-        // 4. Create demo student
+        // 2. Create demo student
+        Role studentRole = roleRepository.findByName(RoleName.ROLE_STUDENT)
+                .orElseThrow(() -> new IllegalStateException("ROLE_STUDENT not found — EssentialDataInitializer may not have run yet"));
+        Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                .orElseThrow(() -> new IllegalStateException("ROLE_ADMIN not found — EssentialDataInitializer may not have run yet"));
+
         User student = createDemoStudentIfNotExists(studentRole);
 
-        // 5. Create demo applications, notifications, documents & audit logs
-        if (applicationRepository.countByDeletedFalse() == 0) {
+        User admin = userRepository.findByEmailAndDeletedFalse("admin@cdac.local")
+                .orElse(null);
+
+        // 3. Create demo applications, notifications, documents & audit logs
+        if (admin != null && applicationRepository.countByDeletedFalse() == 0) {
             createDemoApplications(student, admin);
         }
 
-        log.info("Data initialization completed successfully.");
-    }
-
-    // ========================
-    // Roles
-    // ========================
-
-    private Role createRoleIfNotExists(RoleName roleName, String description) {
-        return roleRepository.findByName(roleName)
-                .orElseGet(() -> {
-                    Role role = Role.builder()
-                            .name(roleName)
-                            .description(description)
-                            .build();
-                    Role savedRole = roleRepository.save(role);
-                    log.info("Seeded role: {}", roleName);
-                    return savedRole;
-                });
-    }
-
-    // ========================
-    // Admin User
-    // ========================
-
-    private User createAdminUserIfNotExists(Role adminRole) {
-        return userRepository.findByEmailAndDeletedFalse(DEFAULT_ADMIN_EMAIL)
-                .orElseGet(() -> {
-                    User adminUser = User.builder()
-                            .firstName("System")
-                            .lastName("Admin")
-                            .email(DEFAULT_ADMIN_EMAIL)
-                            .password(passwordEncoder.encode(DEFAULT_ADMIN_PASSWORD))
-                            .phoneNumber("9999999999")
-                            .enabled(true)
-                            .emailVerified(true)
-                            .accountNonLocked(true)
-                            .deleted(false)
-                            .roles(Set.of(adminRole))
-                            .build();
-                    User saved = userRepository.save(adminUser);
-                    log.info("Seeded admin user: {}", DEFAULT_ADMIN_EMAIL);
-                    return saved;
-                });
+        log.info("Demo data initialization completed successfully.");
     }
 
     // ========================

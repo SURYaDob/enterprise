@@ -1,9 +1,5 @@
 package com.cdac.enterprise.controller;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.List;
-
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,12 +75,12 @@ public class UserAdminController {
 
     @Operation(
             summary = "Get user by ID",
-            description = "Returns a user by their ID. Requires ROLE_ADMIN."
+            description = "Returns a user by their ID. Requires ROLE_ADMIN. Excludes soft-deleted users."
     )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
-        User user = userRepository.findById(id)
+        User user = userRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppMessages.USER_NOT_FOUND));
 
         UserResponse response = UserResponse.builder()
@@ -105,27 +101,17 @@ public class UserAdminController {
     }
 
     @Operation(
-            summary = "Search users by email",
-            description = "Search for users by email pattern. Requires ROLE_ADMIN."
+            summary = "Search user by email",
+            description = "Search for a user by exact email. Requires ROLE_ADMIN."
     )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> searchUsersByEmail(
+    public ResponseEntity<ApiResponse<UserResponse>> searchUsersByEmail(
             @RequestParam @Email String email
     ) {
-        var userOpt = userRepository.findByEmailAndDeletedFalse(email.toLowerCase());
+        User user = userRepository.findByEmailAndDeletedFalse(email.toLowerCase())
+                .orElseThrow(() -> new ResourceNotFoundException(AppMessages.USER_NOT_FOUND));
 
-        if (userOpt.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(ApiResponse.success(
-                            HttpStatus.OK.value(),
-                            "No users found",
-                            List.of()
-                    ));
-        }
-
-        User user = userOpt.get();
         UserResponse response = UserResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -139,18 +125,18 @@ public class UserAdminController {
                 .body(ApiResponse.success(
                         HttpStatus.OK.value(),
                         "User fetched successfully",
-                        List.of(response)
+                        response
                 ));
     }
 
     @Operation(
             summary = "Delete user (soft)",
-            description = "Soft deletes a user by ID. Requires ROLE_ADMIN."
+            description = "Soft deletes a user by ID. Requires ROLE_ADMIN. Excludes soft-deleted users."
     )
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteUser(@PathVariable Long id) {
-        User user = userRepository.findById(id)
+        User user = userRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppMessages.USER_NOT_FOUND));
 
         user.setDeleted(true);
@@ -168,7 +154,7 @@ public class UserAdminController {
 
     @Operation(
             summary = "Update user profile",
-            description = "Updates user details. Requires ROLE_ADMIN."
+            description = "Updates user details. Requires ROLE_ADMIN. Excludes soft-deleted users."
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
@@ -176,7 +162,7 @@ public class UserAdminController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest request
     ) {
-        User user = userRepository.findById(id)
+        User user = userRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppMessages.USER_NOT_FOUND));
 
         if (request.getFirstName() != null) {

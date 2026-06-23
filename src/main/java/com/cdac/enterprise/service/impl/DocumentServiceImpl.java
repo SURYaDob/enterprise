@@ -109,7 +109,7 @@ public class DocumentServiceImpl implements DocumentService {
                 .documentType(documentType)
                 .originalFileName(originalFileName)
                 .storedFileName(storedFileName)
-                .filePath(targetPath.toString())
+                .filePath(uploadDir + "/" + storedFileName)
                 .contentType(file.getContentType())
                 .fileSize(file.getSize())
                 .build();
